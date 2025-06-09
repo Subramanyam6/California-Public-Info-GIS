@@ -40,14 +40,17 @@ echo "=========================================="
 cd /Users/subramanyam6666/Documents/Learning_SoftwareEngineering/GIS_UsefulInfo_California
 
 echo "--- Building backend Docker image (linux/amd64)... ---"
-docker build --platform linux/amd64 -t gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME .
+# Add timestamp to ensure unique image tags
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+docker build --platform linux/amd64 -t gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME:$TIMESTAMP -t gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME:latest .
 
 echo "--- Pushing backend image to Container Registry... ---"
-docker push gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME
+docker push gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME:$TIMESTAMP
+docker push gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME:latest
 
 echo "--- Deploying backend to Cloud Run... ---"
 gcloud run deploy $BACKEND_SERVICE_NAME \
-  --image gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME \
+  --image gcr.io/$GCP_PROJECT_ID/$BACKEND_SERVICE_NAME:$TIMESTAMP \
   --platform managed \
   --region $LOCATION \
   --allow-unauthenticated \
@@ -72,18 +75,28 @@ echo "=========================================="
 # --- 6. Build and Deploy Frontend ---
 cd frontend
 
+echo "--- Cleaning previous build... ---"
+rm -rf build/
+
 echo "--- Building React app... ---"
 REACT_APP_API_BASE_URL=$BACKEND_URL/api/v1 npm run build
 
+# Verify build was successful
+if [ ! -d "build" ]; then
+    echo "Error: Frontend build failed. Build directory not found."
+    exit 1
+fi
+
 echo "--- Building frontend Docker image (linux/amd64)... ---"
-docker build --platform linux/amd64 -t gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME .
+docker build --platform linux/amd64 -t gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME:$TIMESTAMP -t gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME:latest .
 
 echo "--- Pushing frontend image to Container Registry... ---"
-docker push gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME
+docker push gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME:$TIMESTAMP
+docker push gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME:latest
 
 echo "--- Deploying frontend to Cloud Run... ---"
 gcloud run deploy $FRONTEND_SERVICE_NAME \
-  --image gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME \
+  --image gcr.io/$GCP_PROJECT_ID/$FRONTEND_SERVICE_NAME:$TIMESTAMP \
   --platform managed \
   --region $LOCATION \
   --allow-unauthenticated \
