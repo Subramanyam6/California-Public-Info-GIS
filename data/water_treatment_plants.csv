@@ -1,0 +1,59 @@
+facility_id,facility_name,address,city,zip,county,latitude,longitude,contact_number,public_access
+1001,Alameda Water Treatment Plant,123 Alameda St,Alameda County,90000,Alameda,37.6017,-121.7195,555-463-4057,Yes
+1002,Alpine Water Treatment Plant,123 Alpine St,Alpine County,90001,Alpine,38.7641,-119.8132,555-884-3395,Yes
+1003,Amador Water Treatment Plant,123 Amador St,Amador County,90002,Amador,38.4265,-120.5695,555-457-8724,Yes
+1004,Butte Water Treatment Plant,123 Butte St,Butte County,90003,Butte,39.6413,-121.5802,555-166-8860,Yes
+1005,Calaveras Water Treatment Plant,123 Calaveras St,Calaveras County,90004,Calaveras,38.2011,-120.5802,555-182-4214,Yes
+1006,Colusa Water Treatment Plant,123 Colusa St,Colusa County,90005,Colusa,39.0154,-122.2419,555-967-5252,Yes
+1007,Contra Costa Water Treatment Plant,123 Contra Costa St,Contra Costa County,90006,Contra Costa,37.8534,-121.7195,555-233-9948,Yes
+1008,Del Norte Water Treatment Plant,123 Del Norte St,Del Norte County,90007,Del Norte,41.7441,-124.1016,555-722-6948,Yes
+1009,El Dorado Water Treatment Plant,123 El Dorado St,El Dorado County,90008,El Dorado,38.7297,-120.3346,555-919-6792,Yes
+1010,Fresno Water Treatment Plant,123 Fresno St,Fresno County,90009,Fresno,36.7378,-119.7871,555-914-8762,Yes
+1011,Glenn Water Treatment Plant,123 Glenn St,Glenn County,90010,Glenn,39.5179,-122.3419,555-711-1101,Yes
+1012,Humboldt Water Treatment Plant,123 Humboldt St,Humboldt County,90011,Humboldt,40.7449,-124.1016,555-335-6576,Yes
+1013,Imperial Water Treatment Plant,123 Imperial St,Imperial County,90012,Imperial,32.8427,-115.3617,555-408-5097,Yes
+1014,Inyo Water Treatment Plant,123 Inyo St,Inyo County,90013,Inyo,36.8000,-118.0000,555-883-5007,Yes
+1015,Kern Water Treatment Plant,123 Kern St,Kern County,90014,Kern,35.3733,-119.0187,555-149-1052,Yes
+1016,Kings Water Treatment Plant,123 Kings St,Kings County,90015,Kings,36.1013,-119.8456,555-909-1743,Yes
+1017,Lake Water Treatment Plant,123 Lake St,Lake County,90016,Lake,39.0840,-122.7633,555-957-4096,Yes
+1018,Lassen Water Treatment Plant,123 Lassen St,Lassen County,90017,Lassen,40.4732,-120.5802,555-480-7884,Yes
+1019,Los Angeles Water Treatment Plant,123 Los Angeles St,Los Angeles County,90018,Los Angeles,34.0522,-118.2437,555-199-3303,Yes
+1020,Madera Water Treatment Plant,123 Madera St,Madera County,90019,Madera,37.0611,-119.5871,555-252-3298,Yes
+1021,Marin Water Treatment Plant,123 Marin St,Marin County,90020,Marin,38.0834,-122.7633,555-346-2753,Yes
+1022,Mariposa Water Treatment Plant,123 Mariposa St,Mariposa County,90021,Mariposa,37.4849,-119.9665,555-707-9548,Yes
+1023,Mendocino Water Treatment Plant,123 Mendocino St,Mendocino County,90022,Mendocino,39.3074,-123.8022,555-270-9001,Yes
+1024,Merced Water Treatment Plant,123 Merced St,Merced County,90023,Merced,37.3022,-120.4829,555-795-3534,Yes
+1025,Modoc Water Treatment Plant,123 Modoc St,Modoc County,90024,Modoc,41.5888,-120.3346,555-845-7218,Yes
+1026,Mono Water Treatment Plant,123 Mono St,Mono County,90025,Mono,37.9577,-119.0000,555-379-1256,Yes
+1027,Monterey Water Treatment Plant,123 Monterey St,Monterey County,90026,Monterey,36.2333,-121.4334,555-784-7611,Yes
+1028,Napa Water Treatment Plant,123 Napa St,Napa County,90027,Napa,38.5025,-122.2654,555-714-2561,Yes
+1029,Nevada Water Treatment Plant,123 Nevada St,Nevada County,90028,Nevada,39.2779,-121.0161,555-784-6666,Yes
+1030,Orange Water Treatment Plant,123 Orange St,Orange County,90029,Orange,33.7175,-117.8311,555-712-6110,Yes
+1031,Placer Water Treatment Plant,123 Placer St,Placer County,90030,Placer,39.0916,-120.8039,555-284-2184,Yes
+1032,Plumas Water Treatment Plant,123 Plumas St,Plumas County,90031,Plumas,39.9568,-120.8039,555-683-2954,Yes
+1033,Riverside Water Treatment Plant,123 Riverside St,Riverside County,90032,Riverside,33.7455,-116.2023,555-979-1098,Yes
+1034,Sacramento Water Treatment Plant,123 Sacramento St,Sacramento County,90033,Sacramento,38.4747,-121.3542,555-224-5258,Yes
+1035,San Benito Water Treatment Plant,123 San Benito St,San Benito County,90034,San Benito,36.6077,-121.0161,555-403-2922,Yes
+1036,San Bernardino Water Treatment Plant,123 San Bernardino St,San Bernardino County,90035,San Bernardino,34.8941,-116.4194,555-470-4714,Yes
+1037,San Diego Water Treatment Plant,123 San Diego St,San Diego County,90036,San Diego,32.7157,-117.1611,555-503-6317,Yes
+1038,San Francisco Water Treatment Plant,123 San Francisco St,San Francisco County,90037,San Francisco,37.7749,-122.4194,555-612-4095,Yes
+1039,San Joaquin Water Treatment Plant,123 San Joaquin St,San Joaquin County,90038,San Joaquin,37.9358,-121.2908,555-568-2095,Yes
+1040,San Luis Obispo Water Treatment Plant,123 San Luis Obispo St,San Luis Obispo County,90039,San Luis Obispo,35.3102,-120.6596,555-604-8759,Yes
+1041,San Mateo Water Treatment Plant,123 San Mateo St,San Mateo County,90040,San Mateo,37.4419,-122.4194,555-842-8689,Yes
+1042,Santa Barbara Water Treatment Plant,123 Santa Barbara St,Santa Barbara County,90041,Santa Barbara,34.4208,-119.6982,555-864-6877,Yes
+1043,Santa Clara Water Treatment Plant,123 Santa Clara St,Santa Clara County,90042,Santa Clara,37.3541,-121.9552,555-923-2202,Yes
+1044,Santa Cruz Water Treatment Plant,123 Santa Cruz St,Santa Cruz County,90043,Santa Cruz,37.0421,-122.0139,555-530-4936,Yes
+1045,Shasta Water Treatment Plant,123 Shasta St,Shasta County,90044,Shasta,40.7908,-122.3419,555-894-2231,Yes
+1046,Sierra Water Treatment Plant,123 Sierra St,Sierra County,90045,Sierra,39.5779,-120.6802,555-475-4230,Yes
+1047,Siskiyou Water Treatment Plant,123 Siskiyou St,Siskiyou County,90046,Siskiyou,41.5888,-122.7633,555-648-6713,Yes
+1048,Solano Water Treatment Plant,123 Solano St,Solano County,90047,Solano,38.2494,-121.9552,555-274-8706,Yes
+1049,Sonoma Water Treatment Plant,123 Sonoma St,Sonoma County,90048,Sonoma,38.5780,-122.9888,555-309-3668,Yes
+1050,Stanislaus Water Treatment Plant,123 Stanislaus St,Stanislaus County,90049,Stanislaus,37.5091,-121.0161,555-832-6048,Yes
+1051,Sutter Water Treatment Plant,123 Sutter St,Sutter County,90050,Sutter,39.0154,-121.6169,555-593-5115,Yes
+1052,Tehama Water Treatment Plant,123 Tehama St,Tehama County,90051,Tehama,40.0265,-122.3419,555-988-3104,Yes
+1053,Trinity Water Treatment Plant,123 Trinity St,Trinity County,90052,Trinity,40.6221,-123.1147,555-678-2847,Yes
+1054,Tulare Water Treatment Plant,123 Tulare St,Tulare County,90053,Tulare,36.2077,-118.9456,555-668-8268,Yes
+1055,Tuolumne Water Treatment Plant,123 Tuolumne St,Tuolumne County,90054,Tuolumne,37.9502,-120.2346,555-783-2784,Yes
+1056,Ventura Water Treatment Plant,123 Ventura St,Ventura County,90055,Ventura,34.3705,-119.1391,555-248-5209,Yes
+1057,Yolo Water Treatment Plant,123 Yolo St,Yolo County,90056,Yolo,38.7646,-121.9018,555-319-2637,Yes
+1058,Yuba Water Treatment Plant,123 Yuba St,Yuba County,90057,Yuba,39.2779,-121.4169,555-568-2409,Yes

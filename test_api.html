@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testAPI() {
+            const results = document.getElementById('results');
+            
+            try {
+                console.log('Testing counties API...');
+                const countiesResponse = await fetch('http://localhost:5001/api/v1/counties');
+                const countiesData = await countiesResponse.json();
+                console.log('Counties response:', countiesData);
+                
+                console.log('Testing boundaries API...');
+                const boundariesResponse = await fetch('http://localhost:5001/api/v1/counties/boundaries');
+                const boundariesData = await boundariesResponse.json();
+                console.log('Boundaries response:', boundariesData);
+                
+                console.log('Testing treatment plants API...');
+                const plantsResponse = await fetch('http://localhost:5001/api/v1/treatment-plants');
+                const plantsData = await plantsResponse.json();
+                console.log('Treatment plants response:', plantsData);
+                
+                results.innerHTML = `
+                    <p>Counties: ${countiesData.count} loaded</p>
+                    <p>Boundaries: ${boundariesData.data.features.length} features</p>
+                    <p>Treatment Plants: ${plantsData.count} loaded</p>
+                    <p>All APIs working!</p>
+                `;
+                
+            } catch (error) {
+                console.error('API test failed:', error);
+                results.innerHTML = `<p style="color: red;">API test failed: ${error.message}</p>`;
+            }
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html> 

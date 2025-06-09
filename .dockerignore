@@ -1,0 +1,15 @@
+# Docker asset-building and runtime ignores
+.dockerignore
+Dockerfile
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.DS_Store
+.vscode/
+.idea/
+.git/
+README.md
+frontend/ 
