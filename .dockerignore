@@ -1,15 +1,56 @@
-# Docker asset-building and runtime ignores
-.dockerignore
-Dockerfile
-venv/
-__pycache__/
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
 *.pyc
 *.pyo
 *.pyd
 .Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+venv
+env
+ENV
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+frontend/node_modules
+frontend/build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
-.vscode/
-.idea/
-.git/
-README.md
-frontend/ 
+Thumbs.db
+
+# Documentation
+*.md
+!README.md
+
+# Deployment
+deploy.sh
+DEPLOYMENT_GUIDE.md
+RENDER_DEPLOYMENT.md
+
+# Test files
+test_*.py
+test_*.html
+quick_test.py
+
+# Docker
+docker-compose.yml
+Dockerfile
+frontend/Dockerfile

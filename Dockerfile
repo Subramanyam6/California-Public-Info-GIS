@@ -14,12 +14,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
 
 # 5. Copy the data directory
-COPY data/ ../data/
+COPY data/ /app/data/
 
-# 6. Make port 8080 available to the world outside this container
+# Set DATA_DIR environment variable for the app
+ENV DATA_DIR=/app/data
+
+# 6. Make port available (Render uses PORT env var, default to 8080)
 EXPOSE 8080
 
 # 7. Define the command to run the app using Gunicorn
-# The --bind 0.0.0.0:8080 is required by Cloud Run.
-# The value for workers is a recommendation. You can adjust it.
-CMD exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 "app:create_app()" 
+# Render.com sets PORT environment variable dynamically
+# Use PORT env var if set, otherwise default to 8080
+CMD exec gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 1 --threads 8 --timeout 0 "app:create_app()" 

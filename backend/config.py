@@ -5,7 +5,9 @@ import os
 
 class Config:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    DATA_DIR = os.path.join(BASE_DIR, '..', 'data')
+    # In Docker, data is copied to /app/data/
+    # In local dev, data is in ../data relative to backend/
+    DATA_DIR = os.getenv('DATA_DIR', os.path.join(BASE_DIR, '..', 'data'))
     
     # Data file paths
     POPULATION_DATA = os.path.join(DATA_DIR, 'population_by_county.csv')

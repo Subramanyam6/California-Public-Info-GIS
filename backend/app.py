@@ -5,6 +5,7 @@ Main application entry point
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_compress import Compress
 from api.routes import register_routes
 
 def create_app():
@@ -12,6 +13,9 @@ def create_app():
     
     # Enable CORS for all routes
     CORS(app)
+    
+    # Enable GZIP compression for responses
+    Compress(app)
     
     # Configuration
     app.config['DEBUG'] = True
