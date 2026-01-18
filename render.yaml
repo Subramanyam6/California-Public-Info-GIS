@@ -18,7 +18,7 @@ services:
   - type: web
     name: gis-app-frontend
     env: docker
-    dockerfilePath: ./frontend/Dockerfile
+    dockerfilePath: ./Dockerfile
     dockerContext: ./frontend
     plan: free
     envVars:
