@@ -14,6 +14,7 @@ services:
     healthCheckPath: /health
 
   # Frontend Web Service
+  # Note: Deploy backend first, then update REACT_APP_API_BASE_URL with backend URL
   - type: web
     name: gis-app-frontend
     env: docker
@@ -21,9 +22,7 @@ services:
     dockerContext: ./frontend
     plan: free
     envVars:
+      # Set this to your backend URL after backend is deployed
+      # Format: https://gis-api-backend.onrender.com/api/v1
       - key: REACT_APP_API_BASE_URL
-        fromService:
-          type: web
-          name: gis-api-backend
-          property: host
-          format: https://${host}/api/v1
+        sync: false
