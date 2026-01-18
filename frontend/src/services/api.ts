@@ -6,10 +6,17 @@ type RuntimeEnv = {
 };
 
 const runtimeEnv = (window as any).__ENV__ as RuntimeEnv | undefined;
-const API_BASE_URL =
+const rawBaseUrl =
   runtimeEnv?.API_BASE_URL ||
   process.env.REACT_APP_API_BASE_URL ||
   'http://localhost:5001/api/v1';
+
+const normalizeApiBaseUrl = (baseUrl: string): string => {
+  const trimmed = baseUrl.replace(/\/+$/, '');
+  return /\/api\/v1$/.test(trimmed) ? trimmed : `${trimmed}/api/v1`;
+};
+
+const API_BASE_URL = normalizeApiBaseUrl(rawBaseUrl);
 const timeoutValue = runtimeEnv?.API_TIMEOUT || process.env.REACT_APP_API_TIMEOUT;
 const API_TIMEOUT = timeoutValue ? parseInt(timeoutValue, 10) : 30000;
 
