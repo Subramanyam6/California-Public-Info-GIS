@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 4. Copy the backend application code
 COPY backend/ .
 
-# 5. Copy the data directory
-COPY data/ /app/data/
+# 5. Copy the data directory (ensure it exists)
+COPY data /app/data
 
 # Set DATA_DIR environment variable for the app
 ENV DATA_DIR=/app/data

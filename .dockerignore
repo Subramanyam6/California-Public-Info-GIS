@@ -54,3 +54,6 @@ quick_test.py
 docker-compose.yml
 Dockerfile
 frontend/Dockerfile
+
+# Explicitly include data directory (don't ignore it)
+!data/
