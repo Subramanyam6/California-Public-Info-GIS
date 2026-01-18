@@ -1,0 +1,29 @@
+services:
+  # Backend API Service
+  - type: web
+    name: gis-api-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: GEOCODIO_API_KEY
+        sync: false
+      - key: DATA_DIR
+        value: /app/data
+    healthCheckPath: /health
+
+  # Frontend Web Service
+  - type: web
+    name: gis-app-frontend
+    env: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: REACT_APP_API_BASE_URL
+        fromService:
+          type: web
+          name: gis-api-backend
+          property: host
+          format: https://${host}/api/v1
