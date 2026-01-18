@@ -1,7 +1,17 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001/api/v1';
-const API_TIMEOUT = process.env.REACT_APP_API_TIMEOUT ? parseInt(process.env.REACT_APP_API_TIMEOUT) : 30000;
+type RuntimeEnv = {
+  API_BASE_URL?: string;
+  API_TIMEOUT?: string;
+};
+
+const runtimeEnv = (window as any).__ENV__ as RuntimeEnv | undefined;
+const API_BASE_URL =
+  runtimeEnv?.API_BASE_URL ||
+  process.env.REACT_APP_API_BASE_URL ||
+  'http://localhost:5001/api/v1';
+const timeoutValue = runtimeEnv?.API_TIMEOUT || process.env.REACT_APP_API_TIMEOUT;
+const API_TIMEOUT = timeoutValue ? parseInt(timeoutValue, 10) : 30000;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
