@@ -2,7 +2,7 @@ services:
   # Backend API Service
   - type: web
     name: gis-api-backend
-    env: docker
+    runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
     plan: free
@@ -17,7 +17,7 @@ services:
   # Note: Deploy backend first, then update REACT_APP_API_BASE_URL with backend URL
   - type: web
     name: gis-app-frontend
-    env: docker
+    runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: ./frontend
     plan: free
