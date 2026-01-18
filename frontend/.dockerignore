@@ -1,0 +1,31 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build output (will be built in Docker)
+build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Test files
+*.test.tsx
+*.test.ts
+coverage
+
+# Documentation
+*.md
+!README.md

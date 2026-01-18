@@ -76,10 +76,10 @@ git push
    - **Name**: `gis-app-frontend` (or your preferred name)
    - **Region**: Same as backend
    - **Branch**: `main`
-   - **Root Directory**: `frontend`
+   - **Root Directory**: Leave empty (repo root)
    - **Environment**: `Docker`
-   - **Dockerfile Path**: `Dockerfile`
-   - **Docker Context**: `frontend`
+   - **Dockerfile Path**: `frontend/Dockerfile`
+   - **Docker Context**: `.`
 
 4. **Environment Variables**:
    - `PORT`: Leave empty (Render sets this automatically)

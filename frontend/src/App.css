@@ -1,0 +1,609 @@
+.App {
+  text-align: center;
+  height: 100vh;
+  overflow: hidden;
+  padding-bottom: 40px; /* Space for footer */
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sidebar-col {
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  height: calc(100vh - 40px); /* Subtract footer height */
+  overflow-y: auto;
+  padding: 0;
+}
+
+.main-content {
+  height: calc(100vh - 40px); /* Subtract footer height */
+  padding: 0;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+/* Custom map controls */
+.map-legend {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  font-size: 12px;
+}
+
+.county-popup {
+  min-width: 200px;
+}
+
+.county-popup h6 {
+  margin-bottom: 8px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.county-popup .metric {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.county-popup .metric-label {
+  font-weight: 500;
+}
+
+.county-popup .metric-value {
+  color: #666;
+}
+
+/* Treatment plant markers */
+.treatment-plant-marker {
+  background-color: #007bff;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+
+.treatment-plant-marker:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Enhanced treatment plant markers */
+.treatment-plant-marker.nearest {
+  animation: nearestPlantPulse 2s infinite;
+}
+
+@keyframes nearestPlantPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.6);
+  }
+}
+
+.plant-marker {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.plant-marker:hover {
+  transform: scale(1.1);
+}
+
+/* Water quality indicators */
+.water-quality-good { background-color: #28a745; }
+.water-quality-moderate { background-color: #ffc107; }
+.water-quality-poor { background-color: #dc3545; }
+
+
+
+/* Sidebar styling */
+.sidebar-section {
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sidebar-section h6 {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.county-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.county-item {
+  padding: 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.county-item:hover {
+  background-color: #e9ecef;
+}
+
+.county-item.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Filter controls */
+.filter-group {
+  margin-bottom: 1rem;
+}
+
+.filter-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+/* Statistics cards */
+.stats-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.stats-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.stats-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Enhanced search dropdown styling */
+.search-dropdown {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+.search-dropdown .dropdown-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Refresh button styling */
+.refresh-btn {
+  border-left: none !important;
+  color: #000000 !important;
+  border-color: #ced4da !important;
+  background-color: #ffffff !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  font-weight: bold !important;
+}
+
+.refresh-btn:hover {
+  background-color: #f8f9fa !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.refresh-btn .fa-sync-alt {
+  transition: transform 0.3s ease;
+}
+
+.refresh-btn:hover .fa-sync-alt {
+  transform: rotate(180deg);
+}
+
+.refresh-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25) !important;
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+/* Modern number control styling */
+.number-control {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.control-btn {
+  background: #ffffff;
+  border: none;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.control-btn:hover:not(:disabled) {
+  background: #e9ecef;
+  color: #212529;
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f8f9fa;
+}
+
+.minus-btn {
+  border-right: 1px solid #dee2e6;
+}
+
+.plus-btn {
+  border-left: 1px solid #dee2e6;
+}
+
+.control-value {
+  flex: 1;
+  text-align: center;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: #495057;
+  background: #ffffff;
+  min-width: 60px;
+}
+
+/* Water quality filter enhancements */
+.filter-group small.text-muted {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.filter-group small.text-danger {
+  font-weight: 500;
+}
+
+/* County info marker styling */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.4);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.4);
+  }
+}
+
+.county-info-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Enhanced tooltip styling */
+.county-tooltip {
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.county-tooltip::before {
+  border-top-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar-col {
+    height: auto;
+    position: relative;
+  }
+  
+  .main-content {
+    height: auto;
+  }
+  
+  .App {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+/* Address target marker styling */
+.target-marker {
+  animation: blink 1.5s infinite ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* Pulsing info marker */
+@keyframes pulse {
+  0% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+
+.info-marker {
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+  animation: pulse 2s infinite;
+  cursor: pointer;
+}
+
+.info-marker:hover {
+  background: #0056b3;
+}
+
+/* Treatment plant marker enhancements */
+.treatment-plant-marker {
+  cursor: pointer;
+}
+
+.treatment-plant-marker:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.treatment-plant-marker:hover .plant-icon-circle {
+  animation: buzz 0.4s linear infinite;
+}
+
+.plant-icon-circle {
+  background: #2c5aa0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease;
+}
+
+.plant-icon-circle.nearest {
+  background: #ff6b35;
+}
+
+@keyframes buzz {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-1px, 1px) rotate(-2deg); }
+  50% { transform: translate(1px, -1px) rotate(2deg); }
+  75% { transform: translate(-1px, 1px) rotate(-1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.plant-icon-circle i {
+  font-size: 14px;
+}
+
+/* Address search button styling */
+.address-search-btn {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 0 0.375rem 0.375rem 0;
+  transition: all 0.3s ease;
+  min-width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.address-search-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.address-search-btn:active {
+  transform: translateY(0);
+}
+
+.address-search-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.address-search-btn i {
+  font-size: 14px;
+}
+
+/* Enhanced water plant icon styling */
+.water-plant-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.water-plant-icon:hover {
+  transform: scale(1.1);
+}
+
+.water-plant-icon.buzzy {
+  animation: buzzyAnimation 1.5s infinite;
+}
+
+@keyframes buzzyAnimation {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(2deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(-1deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(1deg);
+  }
+}
+
+.nearest-banner {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff6b35, #e55a2b);
+  color: white;
+  font-size: 8px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  animation: bannerPulse 2s infinite;
+  z-index: 1000;
+}
+
+@keyframes bannerPulse {
+  0%, 100% {
+    background: linear-gradient(135deg, #ff6b35, #e55a2b);
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    background: linear-gradient(135deg, #ff8c5a, #ff6b35);
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* Enhanced blinking target marker */
+.address-target-marker.blinking-target {
+  animation: targetBlink 1.5s infinite;
+}
+
+.target-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+@keyframes targetBlink {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Modern title styling */
+.modern-title {
+  background: linear-gradient(135deg, #2c3e50, #3498db, #2980b9);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  text-align: center;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: gradientShift 3s ease-in-out infinite;
+  position: relative;
+}
+
+.modern-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3498db, transparent);
+  border-radius: 2px;
+  animation: underlineGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes underlineGlow {
+  0% {
+    opacity: 0.5;
+    transform: scaleX(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
