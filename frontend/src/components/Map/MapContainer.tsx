@@ -149,17 +149,19 @@ const CountyLayer: React.FC<{
   showPopulation: boolean;
   showWaterQuality: boolean;
 }> = ({ counties, countyBoundaries, selectedCounty, onCountySelect, showPopulation, showWaterQuality }) => {
+  const countyLookup = useMemo(() => {
+    const map = new Map<string, County>();
+    if (counties) {
+      counties.forEach(county => {
+        map.set(county.county_name.toLowerCase().trim(), county);
+      });
+    }
+    return map;
+  }, [counties]);
+
   if (!countyBoundaries || !counties) {
     return null;
   }
-
-  const countyLookup = useMemo(() => {
-    const map = new Map<string, County>();
-    counties.forEach(county => {
-      map.set(county.county_name.toLowerCase().trim(), county);
-    });
-    return map;
-  }, [counties]);
 
   const getTooltipContent = (county: County): string => {
     if (showPopulation) {
