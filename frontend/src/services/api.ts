@@ -107,8 +107,8 @@ export const countiesApi = {
   getByName: (countyName: string): Promise<ApiResponse<County>> =>
     apiClient.get(`/counties/${encodeURIComponent(countyName)}`).then(res => res.data),
 
-  getBoundaries: (): Promise<ApiResponse<any>> =>
-    apiClient.get('/counties/boundaries').then(res => res.data),
+  getBoundaries: (): Promise<any> =>
+    apiClient.get('/counties/boundaries').then(res => res.data?.data ?? res.data),
 
   getPopulation: (sortBy = 'county_name', order = 'asc'): Promise<ApiResponse<County[]>> =>
     apiClient.get('/counties/population', { params: { sort_by: sortBy, order } }).then(res => res.data),

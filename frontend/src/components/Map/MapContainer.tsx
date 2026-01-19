@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { MapContainer as LeafletMapContainer, TileLayer, useMap, GeoJSON, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 // import CountyLayer from './CountyLayer';
@@ -88,6 +88,8 @@ const COUNTY_COORDINATES: { [key: string]: { lat: number; lng: number } } = {
   'Yuba': { lat: 39.2779, lng: -121.4169 }
 };
 
+const COUNTY_RENDERER = L.canvas();
+
 // Create custom info icon for county details
 const createInfoIcon = () => {
   return L.divIcon({
@@ -153,6 +155,14 @@ const CountyLayer: React.FC<{
     return null;
   }
 
+  const countyLookup = useMemo(() => {
+    const map = new Map<string, County>();
+    counties.forEach(county => {
+      map.set(county.county_name.toLowerCase().trim(), county);
+    });
+    return map;
+  }, [counties]);
+
   const getTooltipContent = (county: County): string => {
     if (showPopulation) {
       return `<div style="font-weight: bold; margin-bottom: 4px;">${county.county_name} County</div>
@@ -171,7 +181,7 @@ const CountyLayer: React.FC<{
     const countyNameFromGeoJSON = feature.properties?.NAME || feature.properties?.name || feature.properties?.county_name;
     // Remove "County" suffix if present and normalize
     const normalizedGeoJSONName = countyNameFromGeoJSON?.replace(/\s+County$/i, '').toLowerCase().trim();
-    const county = counties.find(c => c.county_name.toLowerCase().trim() === normalizedGeoJSONName);
+    const county = normalizedGeoJSONName ? countyLookup.get(normalizedGeoJSONName) : undefined;
     
     if (county) {
       // Add click event with zoom functionality
@@ -202,7 +212,7 @@ const CountyLayer: React.FC<{
     const countyNameFromGeoJSON = feature.properties?.NAME || feature.properties?.name || feature.properties?.county_name;
     // Remove "County" suffix if present and normalize
     const normalizedGeoJSONName = countyNameFromGeoJSON?.replace(/\s+County$/i, '').toLowerCase().trim();
-    const county = counties.find(c => c.county_name.toLowerCase().trim() === normalizedGeoJSONName);
+    const county = normalizedGeoJSONName ? countyLookup.get(normalizedGeoJSONName) : undefined;
     
     if (county) {
       // Show choropleth styling only if one of the data layers is enabled
@@ -242,6 +252,7 @@ const CountyLayer: React.FC<{
       data={countyBoundaries}
       style={getStyle}
       onEachFeature={onEachFeature}
+      renderer={COUNTY_RENDERER}
     />
   );
 };
@@ -482,6 +493,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
         center={MapService.DEFAULT_CENTER}
         zoom={MapService.DEFAULT_ZOOM}
         style={{ height: '100%', width: '100%' }}
+        preferCanvas
       >
         {/* OpenStreetMap tile layer */}
         <TileLayer

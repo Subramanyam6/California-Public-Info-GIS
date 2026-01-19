@@ -32,13 +32,13 @@ export const useMapData = () => {
 
       console.log('useMapData: API responses received', {
         countiesCount: countiesResponse.data?.length,
-        boundariesType: typeof boundariesResponse.data,
+        boundariesType: typeof boundariesResponse,
         plantsCount: plantsResponse.data?.length
       });
 
       setState({
         counties: countiesResponse.data,
-        countyBoundaries: boundariesResponse.data,
+        countyBoundaries: boundariesResponse,
         treatmentPlants: plantsResponse.data,
         loading: false,
         error: null

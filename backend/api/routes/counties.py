@@ -2,8 +2,9 @@
 Counties API endpoints
 Handles California county data and boundaries
 """
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 from api.services.data_service import DataService
+from config import Config
 
 counties_bp = Blueprint('counties', __name__)
 data_service = DataService()
@@ -49,11 +50,13 @@ def get_county(county_name):
 def get_county_boundaries():
     """Get California county geographic boundaries (GeoJSON)"""
     try:
-        boundaries = data_service.get_county_boundaries()
-        return jsonify({
-            'status': 'success',
-            'data': boundaries
-        })
+        response = send_file(
+            Config.COUNTIES_GEOJSON,
+            mimetype='application/json',
+            conditional=True
+        )
+        response.headers['Cache-Control'] = 'public, max-age=86400'
+        return response
     except Exception as e:
         return jsonify({
             'status': 'error',
