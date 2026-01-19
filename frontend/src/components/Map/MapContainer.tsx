@@ -88,8 +88,6 @@ const COUNTY_COORDINATES: { [key: string]: { lat: number; lng: number } } = {
   'Yuba': { lat: 39.2779, lng: -121.4169 }
 };
 
-const COUNTY_RENDERER = L.canvas();
-
 // Create custom info icon for county details
 const createInfoIcon = () => {
   return L.divIcon({
@@ -252,7 +250,6 @@ const CountyLayer: React.FC<{
       data={countyBoundaries}
       style={getStyle}
       onEachFeature={onEachFeature}
-      renderer={COUNTY_RENDERER}
     />
   );
 };
