@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -11,8 +10,8 @@ const Footer: React.FC = () => {
           <head>
             <title>MIT License</title>
             <style>
-              body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
-              pre { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+              body { font-family: Inter, -apple-system, sans-serif; padding: 24px; line-height: 1.7; color: #1f3146; }
+              pre { background: #eef4fb; padding: 16px; border-radius: 10px; border: 1px solid #c8d8ea; }
             </style>
           </head>
           <body>
@@ -48,32 +47,30 @@ SOFTWARE.
   };
 
   return (
-    <footer className="app-footer">
-      <Container fluid>
-        <div className="text-center">
-          <p className="footer-text mb-0">
-            © 2024-Present Made with <span className="fire-emoji">🔥</span> by <strong>Bala Subramanyam Duggirala</strong>
-            <a 
-              href="https://github.com/Subramanyam6/California-Public-Info-GIS.git" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="github-link ms-2"
-              title="View source code on GitHub"
-            >
-              <i className="fab fa-github"></i>
-            </a>
-          </p>
-          <button 
-            className="license-link"
-            onClick={openLicense}
-            title="View MIT License"
-          >
-            MIT License
-          </button>
-        </div>
-      </Container>
+    <footer className="enterprise-footer">
+      <div className="footer-left">
+        <span className="status-dot"></span>
+        <span>Operational</span>
+        <span className="divider"></span>
+        <span>© 2024-Present Bala Subramanyam Duggirala</span>
+      </div>
+
+      <div className="footer-right">
+        <button type="button" className="footer-action" onClick={openLicense}>
+          MIT License
+        </button>
+        <a
+          href="https://github.com/Subramanyam6/California-Public-Info-GIS.git"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-action"
+        >
+          <i className="fab fa-github"></i>
+          Repository
+        </a>
+      </div>
     </footer>
   );
 };
 
-export default Footer; 
+export default Footer;

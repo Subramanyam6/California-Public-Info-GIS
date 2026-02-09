@@ -1,30 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import './AboutButton.css';
 
 const AboutButton: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [hasBeenClicked, setHasBeenClicked] = useState(false);
-
-  useEffect(() => {
-    // Check if user has clicked about button in this session
-    const clickedInSession = sessionStorage.getItem('aboutButtonClicked');
-    if (clickedInSession) {
-      setHasBeenClicked(true);
-    }
-  }, []);
-
-  const handleButtonClick = () => {
-    setShowModal(true);
-    if (!hasBeenClicked) {
-      setHasBeenClicked(true);
-      sessionStorage.setItem('aboutButtonClicked', 'true');
-    }
-  };
-
-  const handleClose = () => {
-    setShowModal(false);
-  };
+  const [open, setOpen] = useState(false);
 
   const openLicense = () => {
     const licenseWindow = window.open('', '_blank');
@@ -34,8 +13,8 @@ const AboutButton: React.FC = () => {
           <head>
             <title>MIT License</title>
             <style>
-              body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
-              pre { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+              body { font-family: Inter, -apple-system, sans-serif; padding: 24px; line-height: 1.7; color: #1f3146; }
+              pre { background: #eef4fb; padding: 16px; border-radius: 10px; border: 1px solid #c8d8ea; }
             </style>
           </head>
           <body>
@@ -72,84 +51,52 @@ SOFTWARE.
 
   return (
     <>
-      <Button
-        variant="outline-info"
-        size="sm"
-        onClick={handleButtonClick}
-        className={`about-button ${!hasBeenClicked ? 'buzzy' : 'clicked'}`}
-      >
-        <i className="fas fa-info-circle me-1"></i>
-        About
+      <Button className="about-trigger-btn" onClick={() => setOpen(true)}>
+        <i className="fas fa-circle-info"></i>
+        Platform Brief
       </Button>
 
-      <Modal show={showModal} onHide={handleClose} size="lg" centered>
+      <Modal show={open} onHide={() => setOpen(false)} size="lg" centered className="platform-modal">
         <Modal.Header closeButton>
           <Modal.Title>
-            <i className="fas fa-droplet text-primary me-2"></i>
-            California Water Quality GIS
+            <i className="fas fa-shield-water me-2"></i>
+            California Water Command Center
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="about-content">
-            <h5>Project Overview</h5>
-            <p>
-              This interactive Geographic Information System (GIS) provides comprehensive insights into California's water quality and treatment infrastructure. Our platform combines real-time data visualization with user-friendly tools to help citizens, researchers, and policymakers understand water quality patterns across California counties.
-            </p>
-
-            <h5>Key Features</h5>
-            <ul>
-              <li><strong>Interactive Map:</strong> Explore California counties with detailed water quality data</li>
-              <li><strong>Treatment Plant Locator:</strong> Find water treatment facilities near any address</li>
-              <li><strong>Water Quality Metrics:</strong> View lead, arsenic, and nitrate contamination levels</li>
-              <li><strong>Population Data:</strong> Understand demographic context for water quality issues</li>
-              <li><strong>Advanced Filtering:</strong> Customize data views with contamination thresholds</li>
-            </ul>
-
-            <h5>User Guide</h5>
-            <div className="user-guide">
-              <div className="guide-step">
-                <strong>1. Search for Locations:</strong>
-                <p>Use the county search or enter your address to focus on specific areas. When you enter an address, you'll see nearby treatment plants highlighted on the map.</p>
-              </div>
-              
-              <div className="guide-step">
-                <strong>2. Toggle Map Layers:</strong>
-                <p>Use the sidebar controls to switch between Population Data, Water Quality, and Treatment Plants views. Only one choropleth layer can be active at a time.</p>
-              </div>
-              
-              <div className="guide-step">
-                <strong>3. Filter Treatment Plants:</strong>
-                <p>After entering an address, use the distance slider to find treatment plants within your preferred radius (1-500 miles).</p>
-              </div>
-              
-              <div className="guide-step">
-                <strong>4. Apply Water Quality Filters:</strong>
-                <p>When viewing water quality data, set maximum contamination thresholds for lead, arsenic, and nitrate to identify areas of concern.</p>
-              </div>
-              
-              <div className="guide-step">
-                <strong>5. View County Details:</strong>
-                <p>Click on any county or info marker to view detailed statistics in a popup window.</p>
-              </div>
-            </div>
-
-            <h5>Data Sources</h5>
-            <p>
-              This application uses dummy data mimicking that of the California state environmental agencies, the US Census Bureau, and public water system records. All data is regularly updated to ensure accuracy and relevance.
-            </p>
-
-            <div className="mt-4 text-center">
-              <small className="text-muted">
-                Developed by <strong>Bala Subramanyam Duggirala</strong> | 
-                <button 
-                  className="btn btn-link btn-sm p-0 ms-1"
-                  onClick={openLicense}
-                  style={{ textDecoration: 'underline' }}
-                >
-                  MIT License
-                </button>
+          <div className="platform-brief-grid">
+            <section>
+              <h5>Purpose</h5>
+              <p>
+                This platform unifies county contaminant metrics, treatment
+                infrastructure, and geospatial context so decision teams can
+                investigate risk conditions quickly.
+              </p>
+            </section>
+            <section>
+              <h5>How To Operate</h5>
+              <ol>
+                <li>Target a county or search an address from the control tower.</li>
+                <li>Activate map layers to compare population and contaminant signals.</li>
+                <li>Apply thresholds to isolate high-exposure regions.</li>
+                <li>Inspect county intelligence panels for response planning.</li>
+              </ol>
+            </section>
+            <section>
+              <h5>Dataset Context</h5>
+              <p>
+                The current environment uses representative test data structured
+                like California public records for exploration and workflow testing.
+              </p>
+            </section>
+            <section className="platform-meta">
+              <small>
+                Built by <strong>Bala Subramanyam Duggirala</strong>
               </small>
-            </div>
+              <button className="license-inline-btn" onClick={openLicense}>
+                MIT License
+              </button>
+            </section>
           </div>
         </Modal.Body>
       </Modal>
@@ -157,4 +104,4 @@ SOFTWARE.
   );
 };
 
-export default AboutButton; 
+export default AboutButton;

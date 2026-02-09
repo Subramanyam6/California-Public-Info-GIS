@@ -7,202 +7,172 @@ interface DataPanelProps {
   onClose: () => void;
 }
 
+type Level = 'good' | 'moderate' | 'poor';
+
 const DataPanel: React.FC<DataPanelProps> = ({ county, onClose }) => {
-  const getContaminantLevel = (value: number, contaminant: 'lead' | 'arsenic' | 'nitrate'): {
-    level: 'good' | 'moderate' | 'poor';
-    color: string;
-    percentage: number;
-  } => {
+  const classify = (
+    value: number,
+    contaminant: 'lead' | 'arsenic' | 'nitrate'
+  ): { level: Level; color: 'success' | 'warning' | 'danger'; score: number } => {
     const thresholds = {
       lead: { good: 5, moderate: 15, max: 30 },
       arsenic: { good: 5, moderate: 10, max: 20 },
-      nitrate: { good: 5, moderate: 10, max: 20 }
+      nitrate: { good: 5, moderate: 10, max: 20 },
     };
 
-    const threshold = thresholds[contaminant];
-    const percentage = Math.min((value / threshold.max) * 100, 100);
+    const rules = thresholds[contaminant];
+    const score = Math.min((value / rules.max) * 100, 100);
 
-    if (value <= threshold.good) {
-      return { level: 'good', color: 'success', percentage };
-    } else if (value <= threshold.moderate) {
-      return { level: 'moderate', color: 'warning', percentage };
-    } else {
-      return { level: 'poor', color: 'danger', percentage };
+    if (value <= rules.good) {
+      return { level: 'good', color: 'success', score };
     }
-  };
 
-  const leadInfo = getContaminantLevel(county.lead_avg_ug_per_L, 'lead');
-  const arsenicInfo = getContaminantLevel(county.arsenic_avg_ug_per_L, 'arsenic');
-  const nitrateInfo = getContaminantLevel(county.nitrate_avg_mg_per_L, 'nitrate');
-
-  const formatPopulation = (population: number): string => {
-    if (population >= 1000000) {
-      return (population / 1000000).toFixed(1) + ' Million';
-    } else if (population >= 1000) {
-      return (population / 1000).toFixed(0) + 'K';
+    if (value <= rules.moderate) {
+      return { level: 'moderate', color: 'warning', score };
     }
-    return population.toString();
+
+    return { level: 'poor', color: 'danger', score };
   };
 
-  const getPopulationRank = (population: number): string => {
-    if (population > 3000000) return 'Very High';
-    if (population > 1000000) return 'High';
-    if (population > 500000) return 'Medium';
-    if (population > 100000) return 'Low';
-    return 'Very Low';
+  const lead = classify(county.lead_avg_ug_per_L, 'lead');
+  const arsenic = classify(county.arsenic_avg_ug_per_L, 'arsenic');
+  const nitrate = classify(county.nitrate_avg_mg_per_L, 'nitrate');
+
+  const levelOrder: Record<Level, number> = {
+    good: 0,
+    moderate: 1,
+    poor: 2,
   };
 
-  const getHealthRecommendation = (contaminant: 'lead' | 'arsenic' | 'nitrate', level: 'good' | 'moderate' | 'poor'): string => {
-    const recommendations = {
-      lead: {
-        good: 'Lead levels are within safe limits.',
-        moderate: 'Consider water filtration and regular testing.',
-        poor: 'High lead levels detected. Use filtered water for drinking and cooking.'
-      },
-      arsenic: {
-        good: 'Arsenic levels are within safe limits.',
-        moderate: 'Monitor arsenic levels and consider filtration.',
-        poor: 'High arsenic levels. Use alternative water sources for drinking.'
-      },
-      nitrate: {
-        good: 'Nitrate levels are within safe limits.',
-        moderate: 'Elevated nitrate levels. Monitor water sources.',
-        poor: 'High nitrate levels. Especially dangerous for infants and pregnant women.'
-      }
-    };
+  const overall = [lead.level, arsenic.level, nitrate.level].reduce((current, next) =>
+    levelOrder[next] > levelOrder[current] ? next : current
+  );
 
-    return recommendations[contaminant][level];
+  const overallTone: Record<Level, 'success' | 'warning' | 'danger'> = {
+    good: 'success',
+    moderate: 'warning',
+    poor: 'danger',
   };
 
   return (
-    <Modal show={true} onHide={onClose} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>{county.county_name} County - Detailed Analysis</Modal.Title>
+    <Modal show={true} onHide={onClose} size="xl" centered className="county-intel-modal">
+      <Modal.Header closeButton className="intel-header">
+        <div className="intel-title-wrap">
+          <Modal.Title>{county.county_name} County Intelligence</Modal.Title>
+          <small>Operational contaminant profile and response guidance</small>
+        </div>
+        <Badge bg={overallTone[overall]} className="overall-status-badge">
+          Overall {overall}
+        </Badge>
       </Modal.Header>
-      
-      <Modal.Body>
-        <Row>
-          {/* Population Overview */}
-          <Col md={4} className="mb-3">
-            <Card className="h-100">
-              <Card.Header>
-                <h6 className="mb-0">Population Overview</h6>
-              </Card.Header>
+
+      <Modal.Body className="intel-body">
+        <Row className="g-3">
+          <Col lg={3} md={6}>
+            <Card className="intel-stat-card h-100">
               <Card.Body>
-                <div className="text-center">
-                  <h3 className="text-primary">{formatPopulation(county.total_population)}</h3>
-                  <Badge bg="info">{getPopulationRank(county.total_population)} Density</Badge>
-                </div>
-                <hr />
-                <small className="text-muted">
-                  Total Population: {county.total_population.toLocaleString()}
-                </small>
+                <span>Population</span>
+                <strong>{county.total_population.toLocaleString()}</strong>
+                <small>Residents served</small>
               </Card.Body>
             </Card>
           </Col>
-
-          {/* Water Quality Summary */}
-          <Col md={8} className="mb-3">
-            <Card className="h-100">
-              <Card.Header>
-                <h6 className="mb-0">Water Quality Assessment</h6>
-              </Card.Header>
+          <Col lg={3} md={6}>
+            <Card className="intel-stat-card h-100">
               <Card.Body>
-                {/* Lead */}
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold">Lead (Pb)</span>
-                    <span>{county.lead_avg_ug_per_L.toFixed(2)} μg/L</span>
-                  </div>
-                  <ProgressBar 
-                    variant={leadInfo.color} 
-                    now={leadInfo.percentage} 
-                    className="mb-1"
-                    style={{ height: '8px' }}
-                  />
-                  <small className="text-muted">
-                    {getHealthRecommendation('lead', leadInfo.level)}
-                  </small>
-                </div>
-
-                {/* Arsenic */}
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold">Arsenic (As)</span>
-                    <span>{county.arsenic_avg_ug_per_L.toFixed(2)} μg/L</span>
-                  </div>
-                  <ProgressBar 
-                    variant={arsenicInfo.color} 
-                    now={arsenicInfo.percentage} 
-                    className="mb-1"
-                    style={{ height: '8px' }}
-                  />
-                  <small className="text-muted">
-                    {getHealthRecommendation('arsenic', arsenicInfo.level)}
-                  </small>
-                </div>
-
-                {/* Nitrate */}
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold">Nitrate (NO₃)</span>
-                    <span>{county.nitrate_avg_mg_per_L.toFixed(2)} mg/L</span>
-                  </div>
-                  <ProgressBar 
-                    variant={nitrateInfo.color} 
-                    now={nitrateInfo.percentage} 
-                    className="mb-1"
-                    style={{ height: '8px' }}
-                  />
-                  <small className="text-muted">
-                    {getHealthRecommendation('nitrate', nitrateInfo.level)}
-                  </small>
-                </div>
+                <span>Lead (Pb)</span>
+                <strong>{county.lead_avg_ug_per_L.toFixed(2)} μg/L</strong>
+                <small>EPA threshold watch</small>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col lg={3} md={6}>
+            <Card className="intel-stat-card h-100">
+              <Card.Body>
+                <span>Arsenic (As)</span>
+                <strong>{county.arsenic_avg_ug_per_L.toFixed(2)} μg/L</strong>
+                <small>Geo-source sensitivity</small>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col lg={3} md={6}>
+            <Card className="intel-stat-card h-100">
+              <Card.Body>
+                <span>Nitrate (NO₃)</span>
+                <strong>{county.nitrate_avg_mg_per_L.toFixed(2)} mg/L</strong>
+                <small>Agricultural impact</small>
               </Card.Body>
             </Card>
           </Col>
         </Row>
 
-        {/* Health Advisory */}
-        <Row>
-          <Col xs={12}>
-            <Card>
+        <Row className="g-3 mt-1">
+          <Col lg={8}>
+            <Card className="intel-main-card">
               <Card.Header>
-                <h6 className="mb-0">Health Advisory & Recommendations</h6>
+                <h6 className="mb-0">Contaminant Severity Matrix</h6>
               </Card.Header>
               <Card.Body>
-                <Row>
-                  <Col md={6}>
-                    <h6>Overall Water Quality Status</h6>
-                    <div className="d-flex gap-2 mb-3">
-                      <Badge bg={leadInfo.color}>Lead: {leadInfo.level}</Badge>
-                      <Badge bg={arsenicInfo.color}>Arsenic: {arsenicInfo.level}</Badge>
-                      <Badge bg={nitrateInfo.color}>Nitrate: {nitrateInfo.level}</Badge>
-                    </div>
-                  </Col>
-                  <Col md={6}>
-                    <h6>General Recommendations</h6>
-                    <ul className="small">
-                      <li>Regular water testing recommended</li>
-                      <li>Consider point-of-use filtration systems</li>
-                      <li>Monitor local water quality reports</li>
-                      <li>Consult healthcare providers for specific concerns</li>
-                    </ul>
-                  </Col>
-                </Row>
+                <div className="intel-meter-row">
+                  <div className="intel-meter-head">
+                    <span>Lead (Pb)</span>
+                    <strong>{county.lead_avg_ug_per_L.toFixed(2)} μg/L</strong>
+                  </div>
+                  <ProgressBar now={lead.score} variant={lead.color} className="intel-progress" />
+                  <small>Safe &lt; 5 | Moderate 5-15 | High &gt; 15</small>
+                </div>
+
+                <div className="intel-meter-row">
+                  <div className="intel-meter-head">
+                    <span>Arsenic (As)</span>
+                    <strong>{county.arsenic_avg_ug_per_L.toFixed(2)} μg/L</strong>
+                  </div>
+                  <ProgressBar now={arsenic.score} variant={arsenic.color} className="intel-progress" />
+                  <small>Safe &lt; 5 | Moderate 5-10 | High &gt; 10</small>
+                </div>
+
+                <div className="intel-meter-row mb-0">
+                  <div className="intel-meter-head">
+                    <span>Nitrate (NO₃)</span>
+                    <strong>{county.nitrate_avg_mg_per_L.toFixed(2)} mg/L</strong>
+                  </div>
+                  <ProgressBar now={nitrate.score} variant={nitrate.color} className="intel-progress" />
+                  <small>Safe &lt; 5 | Moderate 5-10 | High &gt; 10</small>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col lg={4}>
+            <Card className="intel-main-card h-100">
+              <Card.Header>
+                <h6 className="mb-0">Recommended Actions</h6>
+              </Card.Header>
+              <Card.Body>
+                <div className="intel-action-badges">
+                  <Badge bg={lead.color}>Lead: {lead.level}</Badge>
+                  <Badge bg={arsenic.color}>Arsenic: {arsenic.level}</Badge>
+                  <Badge bg={nitrate.color}>Nitrate: {nitrate.level}</Badge>
+                </div>
+                <ul className="intel-actions-list">
+                  <li>Increase local sampling frequency for high-risk zones.</li>
+                  <li>Prioritize treatment-plant outreach in vulnerable areas.</li>
+                  <li>Issue public advisories for sensitive households when needed.</li>
+                  <li>Coordinate with county health departments for mitigation campaigns.</li>
+                </ul>
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Modal.Body>
-      
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Close
+
+      <Modal.Footer className="intel-footer">
+        <Button variant="secondary" className="intel-close-btn" onClick={onClose}>
+          Close Intelligence Panel
         </Button>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default DataPanel; 
+export default DataPanel;

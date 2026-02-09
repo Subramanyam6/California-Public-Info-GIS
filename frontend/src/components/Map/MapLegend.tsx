@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 
 interface MapLegendProps {
   showPopulation: boolean;
@@ -12,93 +11,73 @@ const MapLegend: React.FC<MapLegendProps> = ({
   showPopulation,
   showWaterQuality,
   showTreatmentPlants,
-  contaminant
+  contaminant,
 }) => {
   if (!showPopulation && !showWaterQuality && !showTreatmentPlants) {
     return null;
   }
 
   return (
-    <div style={{
-      position: 'absolute',
-      bottom: '20px',
-      right: '20px',
-      zIndex: 1000,
-      minWidth: '200px'
-    }}>
-      <Card className="map-legend">
-        <Card.Body style={{ padding: '10px' }}>
-          <h6 className="mb-2">Legend</h6>
-          
-          {showPopulation && (
-            <div className="mb-2">
-              <strong>Population</strong>
-              <div className="d-flex align-items-center mt-1">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#8B0000', marginRight: '4px' }}></div>
-                <small>&gt;1M</small>
-              </div>
-              <div className="d-flex align-items-center">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#DC143C', marginRight: '4px' }}></div>
-                <small>&gt;500K</small>
-              </div>
-              <div className="d-flex align-items-center">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#FF6347', marginRight: '4px' }}></div>
-                <small>&gt;200K</small>
-              </div>
-              <div className="d-flex align-items-center">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#FFFF00', marginRight: '4px' }}></div>
-                <small>&lt;50K</small>
-              </div>
-            </div>
-          )}
+    <div className="geo-legend-panel">
+      <div className="geo-legend-head">
+        <span>Signal Index</span>
+      </div>
 
-          {showWaterQuality && contaminant && (
-            <div className="mb-2">
-              <strong>{contaminant.charAt(0).toUpperCase() + contaminant.slice(1)} Levels</strong>
-              <div className="d-flex align-items-center mt-1">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#28a745', marginRight: '4px' }}></div>
-                <small>Good</small>
-              </div>
-              <div className="d-flex align-items-center">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#ffc107', marginRight: '4px' }}></div>
-                <small>Moderate</small>
-              </div>
-              <div className="d-flex align-items-center">
-                <div style={{ width: '12px', height: '12px', backgroundColor: '#dc3545', marginRight: '4px' }}></div>
-                <small>Poor</small>
-              </div>
-            </div>
-          )}
+      {showPopulation && (
+        <section className="geo-legend-group">
+          <h6>Population Bands</h6>
+          <div className="geo-legend-item">
+            <span className="swatch population-1"></span>
+            <small>&gt; 1M</small>
+          </div>
+          <div className="geo-legend-item">
+            <span className="swatch population-2"></span>
+            <small>&gt; 500K</small>
+          </div>
+          <div className="geo-legend-item">
+            <span className="swatch population-3"></span>
+            <small>&gt; 200K</small>
+          </div>
+          <div className="geo-legend-item">
+            <span className="swatch population-4"></span>
+            <small>&lt; 50K</small>
+          </div>
+        </section>
+      )}
 
-          {showTreatmentPlants && (
-            <div>
-              <strong>Treatment Plants</strong>
-              <div className="d-flex align-items-center mt-1">
-                <div style={{ 
-                  width: '12px', 
-                  height: '12px', 
-                  backgroundColor: '#007bff', 
-                  borderRadius: '50%',
-                  marginRight: '4px' 
-                }}></div>
-                <small>Public Access</small>
-              </div>
-              <div className="d-flex align-items-center">
-                <div style={{ 
-                  width: '12px', 
-                  height: '12px', 
-                  backgroundColor: '#6c757d', 
-                  borderRadius: '50%',
-                  marginRight: '4px' 
-                }}></div>
-                <small>Private</small>
-              </div>
-            </div>
-          )}
-        </Card.Body>
-      </Card>
+      {showWaterQuality && contaminant && (
+        <section className="geo-legend-group">
+          <h6>{contaminant.toUpperCase()} Risk</h6>
+          <div className="geo-legend-item">
+            <span className="swatch quality-good"></span>
+            <small>Low</small>
+          </div>
+          <div className="geo-legend-item">
+            <span className="swatch quality-moderate"></span>
+            <small>Moderate</small>
+          </div>
+          <div className="geo-legend-item">
+            <span className="swatch quality-poor"></span>
+            <small>High</small>
+          </div>
+        </section>
+      )}
+
+      {showTreatmentPlants && (
+        <section className="geo-legend-group geo-legend-group-last">
+          <h6>Treatment Assets</h6>
+          <div className="geo-legend-item">
+            <span className="swatch swatch-plant"></span>
+            <small>Facility node</small>
+          </div>
+          <div className="geo-legend-item">
+            <span className="swatch swatch-nearest"></span>
+            <small>Nearest facility</small>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
 
-export default MapLegend; 
+export default MapLegend;

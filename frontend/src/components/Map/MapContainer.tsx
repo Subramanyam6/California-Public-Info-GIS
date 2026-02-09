@@ -1,8 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
-import { MapContainer as LeafletMapContainer, TileLayer, useMap, GeoJSON, Marker, Popup } from 'react-leaflet';
+import {
+  MapContainer as LeafletMapContainer,
+  TileLayer,
+  useMap,
+  GeoJSON,
+  Marker,
+  Popup,
+} from 'react-leaflet';
 import L from 'leaflet';
-// import CountyLayer from './CountyLayer';
-// import TreatmentPlantLayer from './TreatmentPlantLayer';
 import MapLegend from './MapLegend';
 import { County, TreatmentPlant } from '../../services/api';
 import { MapService } from '../../services/mapService';
@@ -23,45 +28,50 @@ interface MapContainerProps {
     maxNitrate: number | null;
     plantDistance: number;
   };
-  searchLocation: { lat: number; lng: number; zoom: number; address?: string; type?: string } | null;
+  searchLocation: {
+    lat: number;
+    lng: number;
+    zoom: number;
+    address?: string;
+    type?: string;
+  } | null;
 }
 
-// California county coordinates (approximate centroids)
 const COUNTY_COORDINATES: { [key: string]: { lat: number; lng: number } } = {
-  'Alameda': { lat: 37.6017, lng: -121.7195 },
-  'Alpine': { lat: 38.7641, lng: -119.8132 },
-  'Amador': { lat: 38.4265, lng: -120.5695 },
-  'Butte': { lat: 39.6413, lng: -121.5802 },
-  'Calaveras': { lat: 38.2011, lng: -120.5802 },
-  'Colusa': { lat: 39.0154, lng: -122.2419 },
+  Alameda: { lat: 37.6017, lng: -121.7195 },
+  Alpine: { lat: 38.7641, lng: -119.8132 },
+  Amador: { lat: 38.4265, lng: -120.5695 },
+  Butte: { lat: 39.6413, lng: -121.5802 },
+  Calaveras: { lat: 38.2011, lng: -120.5802 },
+  Colusa: { lat: 39.0154, lng: -122.2419 },
   'Contra Costa': { lat: 37.8534, lng: -121.7195 },
   'Del Norte': { lat: 41.7441, lng: -124.1016 },
   'El Dorado': { lat: 38.7297, lng: -120.3346 },
-  'Fresno': { lat: 36.7378, lng: -119.7871 },
-  'Glenn': { lat: 39.5179, lng: -122.3419 },
-  'Humboldt': { lat: 40.7449, lng: -124.1016 },
-  'Imperial': { lat: 32.8427, lng: -115.3617 },
-  'Inyo': { lat: 36.8000, lng: -118.0000 },
-  'Kern': { lat: 35.3733, lng: -119.0187 },
-  'Kings': { lat: 36.1013, lng: -119.8456 },
-  'Lake': { lat: 39.0840, lng: -122.7633 },
-  'Lassen': { lat: 40.4732, lng: -120.5802 },
+  Fresno: { lat: 36.7378, lng: -119.7871 },
+  Glenn: { lat: 39.5179, lng: -122.3419 },
+  Humboldt: { lat: 40.7449, lng: -124.1016 },
+  Imperial: { lat: 32.8427, lng: -115.3617 },
+  Inyo: { lat: 36.8, lng: -118.0 },
+  Kern: { lat: 35.3733, lng: -119.0187 },
+  Kings: { lat: 36.1013, lng: -119.8456 },
+  Lake: { lat: 39.084, lng: -122.7633 },
+  Lassen: { lat: 40.4732, lng: -120.5802 },
   'Los Angeles': { lat: 34.0522, lng: -118.2437 },
-  'Madera': { lat: 37.0611, lng: -119.5871 },
-  'Marin': { lat: 38.0834, lng: -122.7633 },
-  'Mariposa': { lat: 37.4849, lng: -119.9665 },
-  'Mendocino': { lat: 39.3074, lng: -123.8022 },
-  'Merced': { lat: 37.3022, lng: -120.4829 },
-  'Modoc': { lat: 41.5888, lng: -120.3346 },
-  'Mono': { lat: 37.9577, lng: -119.0000 },
-  'Monterey': { lat: 36.2333, lng: -121.4334 },
-  'Napa': { lat: 38.5025, lng: -122.2654 },
-  'Nevada': { lat: 39.2779, lng: -121.0161 },
-  'Orange': { lat: 33.7175, lng: -117.8311 },
-  'Placer': { lat: 39.0916, lng: -120.8039 },
-  'Plumas': { lat: 39.9568, lng: -120.8039 },
-  'Riverside': { lat: 33.7455, lng: -116.2023 },
-  'Sacramento': { lat: 38.4747, lng: -121.3542 },
+  Madera: { lat: 37.0611, lng: -119.5871 },
+  Marin: { lat: 38.0834, lng: -122.7633 },
+  Mariposa: { lat: 37.4849, lng: -119.9665 },
+  Mendocino: { lat: 39.3074, lng: -123.8022 },
+  Merced: { lat: 37.3022, lng: -120.4829 },
+  Modoc: { lat: 41.5888, lng: -120.3346 },
+  Mono: { lat: 37.9577, lng: -119.0 },
+  Monterey: { lat: 36.2333, lng: -121.4334 },
+  Napa: { lat: 38.5025, lng: -122.2654 },
+  Nevada: { lat: 39.2779, lng: -121.0161 },
+  Orange: { lat: 33.7175, lng: -117.8311 },
+  Placer: { lat: 39.0916, lng: -120.8039 },
+  Plumas: { lat: 39.9568, lng: -120.8039 },
+  Riverside: { lat: 33.7455, lng: -116.2023 },
+  Sacramento: { lat: 38.4747, lng: -121.3542 },
   'San Benito': { lat: 36.6077, lng: -121.0161 },
   'San Bernardino': { lat: 34.8941, lng: -116.4194 },
   'San Diego': { lat: 32.7157, lng: -117.1611 },
@@ -72,75 +82,60 @@ const COUNTY_COORDINATES: { [key: string]: { lat: number; lng: number } } = {
   'Santa Barbara': { lat: 34.4208, lng: -119.6982 },
   'Santa Clara': { lat: 37.3541, lng: -121.9552 },
   'Santa Cruz': { lat: 37.0421, lng: -122.0139 },
-  'Shasta': { lat: 40.7908, lng: -122.3419 },
-  'Sierra': { lat: 39.5779, lng: -120.6802 },
-  'Siskiyou': { lat: 41.5888, lng: -122.7633 },
-  'Solano': { lat: 38.2494, lng: -121.9552 },
-  'Sonoma': { lat: 38.5780, lng: -122.9888 },
-  'Stanislaus': { lat: 37.5091, lng: -121.0161 },
-  'Sutter': { lat: 39.0154, lng: -121.6169 },
-  'Tehama': { lat: 40.0265, lng: -122.3419 },
-  'Trinity': { lat: 40.6221, lng: -123.1147 },
-  'Tulare': { lat: 36.2077, lng: -118.9456 },
-  'Tuolumne': { lat: 37.9502, lng: -120.2346 },
-  'Ventura': { lat: 34.3705, lng: -119.1391 },
-  'Yolo': { lat: 38.7646, lng: -121.9018 },
-  'Yuba': { lat: 39.2779, lng: -121.4169 }
+  Shasta: { lat: 40.7908, lng: -122.3419 },
+  Sierra: { lat: 39.5779, lng: -120.6802 },
+  Siskiyou: { lat: 41.5888, lng: -122.7633 },
+  Solano: { lat: 38.2494, lng: -121.9552 },
+  Sonoma: { lat: 38.578, lng: -122.9888 },
+  Stanislaus: { lat: 37.5091, lng: -121.0161 },
+  Sutter: { lat: 39.0154, lng: -121.6169 },
+  Tehama: { lat: 40.0265, lng: -122.3419 },
+  Trinity: { lat: 40.6221, lng: -123.1147 },
+  Tulare: { lat: 36.2077, lng: -118.9456 },
+  Tuolumne: { lat: 37.9502, lng: -120.2346 },
+  Ventura: { lat: 34.3705, lng: -119.1391 },
+  Yolo: { lat: 38.7646, lng: -121.9018 },
+  Yuba: { lat: 39.2779, lng: -121.4169 },
 };
 
-// Create custom info icon for county details
-const createInfoIcon = () => {
-  return L.divIcon({
-    className: 'county-info-marker',
-    html: `<div class="info-marker">
-      <i class="fas fa-info-circle"></i>
-    </div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15]
+const createCountyMarkerIcon = () =>
+  L.divIcon({
+    className: 'county-command-marker',
+    html: '<div class="command-marker command-marker-county"><i class="fas fa-chart-line"></i></div>',
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
   });
-};
 
-// Create address target icon
-const createAddressIcon = () => {
-  return L.divIcon({
-    className: 'address-target-marker',
-    html: `<div class="target-marker">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc3545">
-        <circle cx="12" cy="12" r="2" fill="#dc3545"/>
-        <circle cx="12" cy="12" r="6" fill="none" stroke="#dc3545" stroke-width="2"/>
-        <circle cx="12" cy="12" r="10" fill="none" stroke="#dc3545" stroke-width="1" opacity="0.5"/>
-        <path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#dc3545" stroke-width="2"/>
-      </svg>
-    </div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12]
-  });
-};
-
-// Create treatment plant icon - enhanced for nearest plant highlighting
-const createTreatmentPlantIcon = (isNearest = false) => {
-  const baseSize = 28;
-  const iconSize = isNearest ? baseSize + 6 : baseSize;
-
-  // Modern icon using Font Awesome droplet inside a colored circle
-  const html = `
-    <div class="water-plant-icon ${isNearest ? 'buzzy' : ''}" style="width:${iconSize}px;height:${iconSize}px;">
-      <div class="plant-icon-circle ${isNearest ? 'nearest' : ''}" style="width:${iconSize}px;height:${iconSize}px;">
-        <i class="fas fa-tint"></i>
+const createAddressIcon = () =>
+  L.divIcon({
+    className: 'address-command-marker',
+    html: `
+      <div class="command-marker command-marker-address">
+        <span class="ring ring-a"></span>
+        <span class="ring ring-b"></span>
+        <span class="core"></span>
       </div>
-      ${isNearest ? '<div class="nearest-banner">CLOSEST</div>' : ''}
-    </div>
-  `;
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  });
+
+const createTreatmentIcon = (isNearest = false) => {
+  const size = isNearest ? 36 : 30;
 
   return L.divIcon({
-    className: `treatment-plant-marker ${isNearest ? 'nearest-plant' : ''}`,
-    html,
-    iconSize: [iconSize, iconSize],
-    iconAnchor: [iconSize / 2, iconSize / 2]
+    className: `plant-command-marker ${isNearest ? 'is-nearest' : ''}`,
+    html: `
+      <div class="command-marker command-marker-plant ${isNearest ? 'nearest' : ''}">
+        <i class="fas fa-industry"></i>
+        ${isNearest ? '<span class="nearest-tag">Nearest</span>' : ''}
+      </div>
+    `,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
   });
 };
 
-// Simple County Layer Component
 const CountyLayer: React.FC<{
   counties: County[];
   countyBoundaries: any;
@@ -148,101 +143,151 @@ const CountyLayer: React.FC<{
   onCountySelect: (county: County | null) => void;
   showPopulation: boolean;
   showWaterQuality: boolean;
-}> = ({ counties, countyBoundaries, selectedCounty, onCountySelect, showPopulation, showWaterQuality }) => {
+}> = ({
+  counties,
+  countyBoundaries,
+  selectedCounty,
+  onCountySelect,
+  showPopulation,
+  showWaterQuality,
+}) => {
   const countyLookup = useMemo(() => {
     const map = new Map<string, County>();
-    if (counties) {
-      counties.forEach(county => {
-        map.set(county.county_name.toLowerCase().trim(), county);
-      });
-    }
+    counties.forEach((county) => {
+      map.set(county.county_name.toLowerCase().trim(), county);
+    });
     return map;
   }, [counties]);
 
-  if (!countyBoundaries || !counties) {
+  if (!countyBoundaries || counties.length === 0) {
     return null;
   }
 
   const getTooltipContent = (county: County): string => {
     if (showPopulation) {
-      return `<div style="font-weight: bold; margin-bottom: 4px;">${county.county_name} County</div>
-              <div>Population: ${county.total_population.toLocaleString()}</div>`;
-    } else if (showWaterQuality) {
-      return `<div style="font-weight: bold; margin-bottom: 4px;">${county.county_name} County</div>
-              <div>Lead: ${county.lead_avg_ug_per_L.toFixed(2)} μg/L</div>
-              <div>Arsenic: ${county.arsenic_avg_ug_per_L.toFixed(2)} μg/L</div>
-              <div>Nitrate: ${county.nitrate_avg_mg_per_L.toFixed(2)} mg/L</div>`;
-    } else {
-      return `<div style="font-weight: bold;">${county.county_name} County</div>`;
+      return `
+        <div class="county-hover-card">
+          <strong>${county.county_name} County</strong>
+          <span>Population ${county.total_population.toLocaleString()}</span>
+        </div>
+      `;
     }
+
+    if (showWaterQuality) {
+      return `
+        <div class="county-hover-card">
+          <strong>${county.county_name} County</strong>
+          <span>Lead ${county.lead_avg_ug_per_L.toFixed(2)} μg/L</span>
+          <span>Arsenic ${county.arsenic_avg_ug_per_L.toFixed(2)} μg/L</span>
+          <span>Nitrate ${county.nitrate_avg_mg_per_L.toFixed(2)} mg/L</span>
+        </div>
+      `;
+    }
+
+    return `<div class="county-hover-card"><strong>${county.county_name} County</strong></div>`;
   };
 
   const onEachFeature = (feature: any, layer: L.Layer) => {
-    const countyNameFromGeoJSON = feature.properties?.NAME || feature.properties?.name || feature.properties?.county_name;
-    // Remove "County" suffix if present and normalize
-    const normalizedGeoJSONName = countyNameFromGeoJSON?.replace(/\s+County$/i, '').toLowerCase().trim();
-    const county = normalizedGeoJSONName ? countyLookup.get(normalizedGeoJSONName) : undefined;
-    
-    if (county) {
-      // Add click event with zoom functionality
-      layer.on('click', (e) => {
-        e.originalEvent.stopPropagation();
-        
-        // Get county coordinates and zoom to it
-        const countyCoords = COUNTY_COORDINATES[county.county_name];
-        if (countyCoords) {
-          const map = e.target._map;
-          map.setView([countyCoords.lat, countyCoords.lng], 9); // Same zoom level as other features
-        }
-        
-        // Select the county for info display
-        onCountySelect(county);
-      });
-      
-      // Add tooltip with appropriate content
-      layer.bindTooltip(getTooltipContent(county), {
-        permanent: false,
-        direction: 'center',
-        className: 'county-tooltip'
-      });
+    const countyNameFromGeoJSON =
+      feature.properties?.NAME ||
+      feature.properties?.name ||
+      feature.properties?.county_name;
+
+    const normalizedGeoJSONName = countyNameFromGeoJSON
+      ?.replace(/\s+County$/i, '')
+      .toLowerCase()
+      .trim();
+
+    const county = normalizedGeoJSONName
+      ? countyLookup.get(normalizedGeoJSONName)
+      : undefined;
+
+    if (!county) {
+      return;
     }
+
+    layer.on('click', (event: any) => {
+      event.originalEvent.stopPropagation();
+
+      const countyCoords = COUNTY_COORDINATES[county.county_name];
+      if (countyCoords) {
+        const map = event.target._map;
+        map.setView([countyCoords.lat, countyCoords.lng], 9);
+      }
+
+      onCountySelect(county);
+    });
+
+    layer.on('mouseover', () => {
+      if (layer instanceof L.Path) {
+        layer.setStyle({ weight: 3.2 });
+      }
+    });
+
+    layer.on('mouseout', () => {
+      if (layer instanceof L.Path) {
+        layer.setStyle({
+          weight: selectedCounty?.county_name === county.county_name ? 3.2 : 2,
+        });
+      }
+    });
+
+    layer.bindTooltip(getTooltipContent(county), {
+      permanent: false,
+      direction: 'center',
+      className: 'county-hover-tooltip',
+    });
   };
 
   const getStyle = (feature: any) => {
-    const countyNameFromGeoJSON = feature.properties?.NAME || feature.properties?.name || feature.properties?.county_name;
-    // Remove "County" suffix if present and normalize
-    const normalizedGeoJSONName = countyNameFromGeoJSON?.replace(/\s+County$/i, '').toLowerCase().trim();
-    const county = normalizedGeoJSONName ? countyLookup.get(normalizedGeoJSONName) : undefined;
-    
-    if (county) {
-      // Show choropleth styling only if one of the data layers is enabled
-      if (showPopulation || showWaterQuality) {
-      return MapService.createCountyStyle(county, {
+    const countyNameFromGeoJSON =
+      feature.properties?.NAME ||
+      feature.properties?.name ||
+      feature.properties?.county_name;
+
+    const normalizedGeoJSONName = countyNameFromGeoJSON
+      ?.replace(/\s+County$/i, '')
+      .toLowerCase()
+      .trim();
+
+    const county = normalizedGeoJSONName
+      ? countyLookup.get(normalizedGeoJSONName)
+      : undefined;
+
+    if (!county) {
+      return {
+        fillColor: 'transparent',
+        weight: 1,
+        opacity: 0.8,
+        color: '#8ea2b4',
+        dashArray: '3',
+        fillOpacity: 0,
+      };
+    }
+
+    const isSelected = selectedCounty?.county_name === county.county_name;
+
+    if (showPopulation || showWaterQuality) {
+      const style = MapService.createCountyStyle(county, {
         showPopulation,
         showWaterQuality,
-        contaminant: 'lead'
+        contaminant: 'lead',
       });
-      } else {
-        // Default county boundary style - just borders with tooltips
-        return {
-          fillColor: 'transparent',
-          weight: 2,
-          opacity: 1,
-          color: '#666',
-          dashArray: '',
-          fillOpacity: 0
-        };
-      }
+
+      return {
+        ...style,
+        color: isSelected ? '#17456c' : 'rgba(255,255,255,0.86)',
+        weight: isSelected ? 3.2 : 2,
+      };
     }
-    
-    // Show counties with a neutral border style even if no data match
+
     return {
-      fillColor: 'transparent',
-      weight: 1,
+      fillColor: isSelected ? 'rgba(10,132,255,0.2)' : 'transparent',
+      weight: isSelected ? 3.2 : 2,
       opacity: 1,
-      color: '#999',
-      dashArray: '3',
-      fillOpacity: 0
+      color: isSelected ? '#23689f' : '#5f7488',
+      dashArray: '',
+      fillOpacity: isSelected ? 0.45 : 0,
     };
   };
 
@@ -256,71 +301,63 @@ const CountyLayer: React.FC<{
   );
 };
 
-// Info Marker Component for searched county
-const InfoMarker: React.FC<{
+const CountyMarker: React.FC<{
   county: County;
   coordinates: { lat: number; lng: number };
   onCountySelect: (county: County) => void;
-}> = ({ county, coordinates, onCountySelect }) => {
-  return (
-    <Marker
-      position={[coordinates.lat, coordinates.lng]}
-      icon={createInfoIcon()}
-      eventHandlers={{
-        click: () => {
-          onCountySelect(county);
-        }
-      }}
-    >
-      <Popup>
-        <div style={{ textAlign: 'center' }}>
-          <strong>{county.county_name} County</strong>
-          <br />
-          <small>Click for detailed analysis</small>
-        </div>
-      </Popup>
-    </Marker>
-  );
-};
+}> = ({ county, coordinates, onCountySelect }) => (
+  <Marker
+    position={[coordinates.lat, coordinates.lng]}
+    icon={createCountyMarkerIcon()}
+    eventHandlers={{
+      click: () => onCountySelect(county),
+    }}
+  >
+    <Popup>
+      <div className="marker-popup marker-popup-county">
+        <strong>{county.county_name} County</strong>
+        <small>Open county intelligence panel</small>
+      </div>
+    </Popup>
+  </Marker>
+);
 
-// Address Marker Component for user-searched addresses
 const AddressMarker: React.FC<{
   coordinates: { lat: number; lng: number };
   address?: string;
-}> = ({ coordinates, address }) => {
-  return (
-    <Marker
-      position={[coordinates.lat, coordinates.lng]}
-      icon={createAddressIcon()}
-    >
-      {address && (
-        <Popup>
-          <div style={{ textAlign: 'center' }}>
-            <strong>📍 Your Location</strong>
-            <br />
-            <small>{address}</small>
-          </div>
-        </Popup>
-      )}
-    </Marker>
-  );
-};
+}> = ({ coordinates, address }) => (
+  <Marker position={[coordinates.lat, coordinates.lng]} icon={createAddressIcon()}>
+    {address && (
+      <Popup>
+        <div className="marker-popup marker-popup-address">
+          <strong>Searched Address</strong>
+          <small>{address}</small>
+        </div>
+      </Popup>
+    )}
+  </Marker>
+);
 
-// Enhanced Treatment Plant Layer Component with Distance Filtering
 const TreatmentPlantLayer: React.FC<{
   treatmentPlants: TreatmentPlant[];
-  selectedCounty: County | null;
-  searchLocation: { lat: number; lng: number; zoom: number; address?: string; type?: string } | null;
+  searchLocation: {
+    lat: number;
+    lng: number;
+    zoom: number;
+    address?: string;
+    type?: string;
+  } | null;
   plantDistance: number;
-}> = ({ treatmentPlants, selectedCounty, searchLocation, plantDistance }) => {
+}> = ({ treatmentPlants, searchLocation, plantDistance }) => {
   const map = useMap();
 
   useEffect(() => {
-    if (!treatmentPlants) return;
+    if (!treatmentPlants) {
+      return;
+    }
 
     const markers: L.Marker[] = [];
 
-    // If user has searched an address, filter plants by distance
     let plantsToShow = treatmentPlants;
     let nearestPlant: (TreatmentPlant & { distance: number }) | null = null;
 
@@ -331,69 +368,77 @@ const TreatmentPlantLayer: React.FC<{
         treatmentPlants,
         plantDistance
       );
-      
+
       plantsToShow = plantsWithDistance;
       nearestPlant = plantsWithDistance.length > 0 ? plantsWithDistance[0] : null;
     }
 
-         plantsToShow.forEach(plant => {
-       const isNearest = Boolean(nearestPlant && 
-         plant.latitude === nearestPlant.latitude && 
-         plant.longitude === nearestPlant.longitude);
-      
+    plantsToShow.forEach((plant) => {
+      const isNearest = Boolean(
+        nearestPlant &&
+          plant.latitude === nearestPlant.latitude &&
+          plant.longitude === nearestPlant.longitude
+      );
+
       const plantWithDistance = plant as TreatmentPlant & { distance?: number };
 
       const marker = L.marker([plant.latitude, plant.longitude], {
-        icon: createTreatmentPlantIcon(isNearest),
-        zIndexOffset: isNearest ? 1000 : 0
+        icon: createTreatmentIcon(isNearest),
+        zIndexOffset: isNearest ? 1000 : 0,
       });
 
-             // Enhanced popup content
-       const popupContent = `
-         <div style="min-width: 230px;">
-           <img src="https://picsum.photos/seed/plant${plant.facility_id}/230/120" alt="Plant" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 6px; object-fit: cover;" />
-           ${isNearest ? `
-             <div style="margin-bottom: 8px; padding: 6px; background-color: #fff3cd; border-radius: 4px; border: 1px solid #ffeaa7;">
-               <strong style="color: #856404;">
-                 <i class="fas fa-star" style="margin-right: 4px;"></i>
-                 Nearest Treatment Plant
-               </strong>
-             </div>
-           ` : ''}
-           <h6 style="margin-bottom: 6px;">${plant.facility_name}</h6>
-           <div style="margin-bottom: 4px;"><strong>ID:</strong> ${plant.facility_id}</div>
-           <div style="margin-bottom: 4px;"><strong>County:</strong> ${plant.county}</div>
-           <div style="margin-bottom: 4px;"><strong>Public Access:</strong> ${plant.public_access}</div>
-           ${plant.capacity_mgd ? `<div style="margin-bottom: 4px;"><strong>Capacity:</strong> ${plant.capacity_mgd} MGD</div>` : ''}
-           ${plantWithDistance.distance !== undefined ? `
-             <div style="margin-top: 8px; padding: 6px; background-color: #e8f4fd; border-radius: 4px;">
-               <strong style="color: #007bff;">
-                 <i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i>
-                 ${DistanceService.formatDistance(plantWithDistance.distance)} away
-               </strong>
-             </div>
-           ` : ''}
-         </div>
-       `;
+      const popupContent = `
+        <div class="plant-intel-popup">
+          ${
+            isNearest
+              ? '<div class="plant-intel-pill"><i class="fas fa-bolt"></i>Nearest to searched address</div>'
+              : ''
+          }
+          <h6>${plant.facility_name}</h6>
+          <div class="plant-intel-row"><span>ID</span><strong>${plant.facility_id}</strong></div>
+          <div class="plant-intel-row"><span>County</span><strong>${plant.county}</strong></div>
+          <div class="plant-intel-row"><span>Public Access</span><strong>${plant.public_access}</strong></div>
+          ${
+            plant.capacity_mgd
+              ? `<div class="plant-intel-row"><span>Capacity</span><strong>${plant.capacity_mgd} MGD</strong></div>`
+              : ''
+          }
+          ${
+            plantWithDistance.distance !== undefined
+              ? `<div class="plant-intel-distance"><i class="fas fa-route"></i>${DistanceService.formatDistance(
+                  plantWithDistance.distance
+                )} from address</div>`
+              : ''
+          }
+        </div>
+      `;
 
       marker.bindPopup(popupContent);
-      marker.bindTooltip(plant.facility_name, { direction: 'top' });
-      
+      marker.bindTooltip(plant.facility_name, {
+        direction: 'top',
+        className: 'plant-hover-tooltip',
+      });
+
       marker.addTo(map);
       markers.push(marker);
     });
 
     return () => {
-      markers.forEach(marker => map.removeLayer(marker));
+      markers.forEach((marker) => map.removeLayer(marker));
     };
   }, [treatmentPlants, map, searchLocation, plantDistance]);
 
   return null;
 };
 
-// Map updater component for search functionality
 const MapUpdater: React.FC<{
-  searchLocation: { lat: number; lng: number; zoom: number; address?: string; type?: string } | null;
+  searchLocation: {
+    lat: number;
+    lng: number;
+    zoom: number;
+    address?: string;
+    type?: string;
+  } | null;
 }> = ({ searchLocation }) => {
   const map = useMap();
 
@@ -413,94 +458,77 @@ const MapContainer: React.FC<MapContainerProps> = ({
   selectedCounty,
   onCountySelect,
   filters,
-  searchLocation
+  searchLocation,
 }) => {
-  // Filter counties based on water quality filters - ONLY when water quality layer is active
-  const getFilteredCounties = (): County[] => {
-    if (!counties) return [];
-    
-    // Only apply water quality filters when water quality layer is shown
+  const filteredCounties = useMemo(() => {
+    if (!counties) {
+      return [];
+    }
+
     if (!filters.showWaterQuality) {
-      return counties; // Return all counties for population layer or boundary display
+      return counties;
     }
-    
-    let filtered = [...counties];
-    
-    if (filters.maxLead !== null) {
-      filtered = filtered.filter(county => county.lead_avg_ug_per_L <= filters.maxLead!);
-    }
-    
-    if (filters.maxArsenic !== null) {
-      filtered = filtered.filter(county => county.arsenic_avg_ug_per_L <= filters.maxArsenic!);
-    }
-    
-    if (filters.maxNitrate !== null) {
-      filtered = filtered.filter(county => county.nitrate_avg_mg_per_L <= filters.maxNitrate!);
-    }
-    
-    return filtered;
-  };
 
-  // Filter treatment plants based on filters
-  const getFilteredTreatmentPlants = (): TreatmentPlant[] => {
-    if (!treatmentPlants || !filters.showTreatmentPlants) return [];
-    
+    return counties.filter((county) => {
+      const passLead = filters.maxLead === null || county.lead_avg_ug_per_L <= filters.maxLead;
+      const passArsenic =
+        filters.maxArsenic === null || county.arsenic_avg_ug_per_L <= filters.maxArsenic;
+      const passNitrate =
+        filters.maxNitrate === null || county.nitrate_avg_mg_per_L <= filters.maxNitrate;
+
+      return passLead && passArsenic && passNitrate;
+    });
+  }, [counties, filters.maxLead, filters.maxArsenic, filters.maxNitrate, filters.showWaterQuality]);
+
+  const filteredTreatmentPlants = useMemo(() => {
+    if (!treatmentPlants || !filters.showTreatmentPlants) {
+      return [];
+    }
+
     return treatmentPlants;
-  };
+  }, [treatmentPlants, filters.showTreatmentPlants]);
 
-  const filteredCounties = getFilteredCounties();
-  const filteredTreatmentPlants = getFilteredTreatmentPlants();
-
-  // Get county from search location for info marker
-  const getSearchedCounty = (): County | null => {
-    // Only show info marker when there's an actual county search (not initial state or address search)
-    if (!searchLocation || !searchLocation.type || searchLocation.type === 'address' || !counties) {
+  const searchedCounty = useMemo(() => {
+    if (!searchLocation || searchLocation.type !== 'county' || !counties) {
       return null;
     }
-    
-    // Only for county searches, not random searches
-    if (searchLocation.type !== 'county') {
-      return null;
-    }
-    
-    // Find closest county to search location
-    let closestCounty = null;
+
+    let closestCounty: County | null = null;
     let minDistance = Infinity;
 
-    counties.forEach(county => {
-      const coords = COUNTY_COORDINATES[county.county_name];
-      if (coords) {
-        const distance = Math.sqrt(
-          Math.pow(coords.lat - searchLocation.lat, 2) + 
-          Math.pow(coords.lng - searchLocation.lng, 2)
-        );
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestCounty = county;
-        }
+    counties.forEach((county) => {
+      const coordinates = COUNTY_COORDINATES[county.county_name];
+      if (!coordinates) {
+        return;
+      }
+
+      const distance = Math.sqrt(
+        Math.pow(coordinates.lat - searchLocation.lat, 2) +
+          Math.pow(coordinates.lng - searchLocation.lng, 2)
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestCounty = county;
       }
     });
 
     return closestCounty;
-  };
-
-  const searchedCounty = getSearchedCounty();
+  }, [counties, searchLocation]);
 
   return (
-    <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+    <div className="geo-map-stage">
       <LeafletMapContainer
         center={MapService.DEFAULT_CENTER}
         zoom={MapService.DEFAULT_ZOOM}
-        style={{ height: '100%', width: '100%' }}
+        className="geo-map-canvas"
         preferCanvas
       >
-        {/* OpenStreetMap tile layer */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
 
-        {/* County boundaries - always visible, with choropleth styling only when data layers are enabled */}
         {countyBoundaries && counties && counties.length > 0 && (
           <CountyLayer
             counties={filteredCounties}
@@ -512,38 +540,32 @@ const MapContainer: React.FC<MapContainerProps> = ({
           />
         )}
 
-        {/* Info marker for searched county */}
-        {searchedCounty && searchLocation && searchLocation.type === 'county' && (
-          <InfoMarker
+        {searchedCounty && searchLocation?.type === 'county' && (
+          <CountyMarker
             county={searchedCounty}
             coordinates={{ lat: searchLocation.lat, lng: searchLocation.lng }}
             onCountySelect={onCountySelect}
           />
         )}
 
-        {/* Address marker for user locations */}
-        {searchLocation && searchLocation.type === 'address' && (
+        {searchLocation?.type === 'address' && (
           <AddressMarker
             coordinates={{ lat: searchLocation.lat, lng: searchLocation.lng }}
             address={searchLocation.address}
           />
         )}
 
-        {/* Treatment plants */}
         {filters.showTreatmentPlants && (
           <TreatmentPlantLayer
             treatmentPlants={filteredTreatmentPlants}
-            selectedCounty={selectedCounty}
             searchLocation={searchLocation}
             plantDistance={filters.plantDistance}
           />
         )}
 
-        {/* Map updater for search functionality */}
         <MapUpdater searchLocation={searchLocation} />
       </LeafletMapContainer>
 
-      {/* Map legend */}
       <MapLegend
         showPopulation={filters.showPopulation}
         showWaterQuality={filters.showWaterQuality}
@@ -554,4 +576,4 @@ const MapContainer: React.FC<MapContainerProps> = ({
   );
 };
 
-export default MapContainer; 
+export default MapContainer;
